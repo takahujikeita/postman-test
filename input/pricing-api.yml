@@ -30,6 +30,28 @@ paths:
                       type: number
                     currency:
                       type: string
+  /status:
+    get:
+      summary: Get Service Status
+      description: 価格設定サービスの状態を取得
+      operationId: getServiceStatus
+      responses:
+        '200':
+          description: サービス状態
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  service:
+                    type: string
+                    example: "pricing"
+                  status:
+                    type: string
+                    enum: [active, maintenance, error]
+                  uptime:
+                    type: number
+                    description: "Uptime in seconds"
     post:
       summary: Create Pricing Plan
       description: 新しい料金プランを作成
