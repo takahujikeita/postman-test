@@ -17,7 +17,7 @@
       "description": "SaaSus Auth API endpoints",
       "item": [
         {
-          "id": "ce7cd61c-3360-4deb-8eac-f94ebc19abd7",
+          "id": "65b1714e-2995-40bf-8d54-300d3421f5f2",
           "name": "Get User Info",
           "request": {
             "name": "Get User Info",
@@ -56,7 +56,7 @@
           },
           "response": [
             {
-              "id": "aeffcf68-2970-4187-a415-601835b9cb26",
+              "id": "41ff7cea-b4d5-4b51-b9ae-13e520fe0c6f",
               "name": "ユーザー情報",
               "originalRequest": {
                 "url": {
@@ -91,7 +91,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"id\": \"culpa ex\",\n  \"email\": \"in dolor dolore in laborum\",\n  \"name\": \"dolore reprehenderit\"\n}",
+              "body": "{\n  \"id\": \"aliquip amet irure Excepteur\",\n  \"email\": \"Lorem aute fugiat irure\",\n  \"name\": \"voluptate minim\"\n}",
               "cookie": [],
               "_postman_previewlanguage": "json"
             }
@@ -102,7 +102,7 @@
           }
         },
         {
-          "id": "b6d43ea1-9208-44e7-a5fe-0dda852e7fd0",
+          "id": "88d3f520-c58c-46c7-948f-faf199d84585",
           "name": "Validate Token",
           "request": {
             "name": "Validate Token",
@@ -147,7 +147,7 @@
           },
           "response": [
             {
-              "id": "5adcdea6-6ec8-45e0-ad34-95c6ab32974c",
+              "id": "dd08a6a8-e555-423c-adaa-d3511e88cfdd",
               "name": "検証結果",
               "originalRequest": {
                 "url": {
@@ -185,7 +185,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"valid\": false,\n  \"expires_at\": \"amet est ex cillum\"\n}",
+              "body": "{\n  \"valid\": false,\n  \"expires_at\": \"est cillum voluptate\"\n}",
               "cookie": [],
               "_postman_previewlanguage": "json"
             }
@@ -202,11 +202,11 @@
       "description": "SaaSus Pricing API endpoints",
       "item": [
         {
-          "id": "79d41de9-fb80-42f0-9111-7f21755ce9d2",
+          "id": "5aae2a1c-1ea5-4dae-b7bc-e2628011bd89",
           "name": "plans",
           "item": [
             {
-              "id": "37e8ef28-87ac-46a5-bfeb-deb06383e915",
+              "id": "5f8d62b6-788c-4a3b-9a75-37a0749d8ce2",
               "name": "Get Pricing Plans",
               "request": {
                 "name": "Get Pricing Plans",
@@ -238,7 +238,7 @@
               },
               "response": [
                 {
-                  "id": "140b5ddd-38c8-4145-aba1-9cfe97025605",
+                  "id": "2a5ef83e-ab1d-4265-9f9b-4699ccc99111",
                   "name": "料金プラン一覧",
                   "originalRequest": {
                     "url": {
@@ -268,7 +268,7 @@
                       "value": "application/json"
                     }
                   ],
-                  "body": "[\n  {\n    \"id\": \"nostrud\",\n    \"name\": \"consectetur ipsum ut\",\n    \"price\": -90064870.83311692,\n    \"currency\": \"velit in nostrud magna\"\n  },\n  {\n    \"id\": \"nulla\",\n    \"name\": \"consectetur tempor dolor\",\n    \"price\": -78546726.73326242,\n    \"currency\": \"culpa aute\"\n  }\n]",
+                  "body": "[\n  {\n    \"id\": \"laboris et incididunt velit aliquip\",\n    \"name\": \"Lorem\",\n    \"price\": -29007160.091728628,\n    \"currency\": \"occaecat laborum id\"\n  },\n  {\n    \"id\": \"deserunt\",\n    \"name\": \"magna do\",\n    \"price\": 5998803.941961974,\n    \"currency\": \"amet magna qui\"\n  }\n]",
                   "cookie": [],
                   "_postman_previewlanguage": "json"
                 }
@@ -279,7 +279,7 @@
               }
             },
             {
-              "id": "2d237317-ee76-4776-8c2c-1b96c6170137",
+              "id": "9ae49947-96fc-4fcc-b2ae-b6c4f3af2f30",
               "name": "Create Pricing Plan",
               "request": {
                 "name": "Create Pricing Plan",
@@ -324,7 +324,7 @@
               },
               "response": [
                 {
-                  "id": "41212db5-3044-418a-bf58-6ec07c18b62d",
+                  "id": "5331ab19-0839-4482-bbfe-d42267e2e7b9",
                   "name": "作成された料金プラン",
                   "originalRequest": {
                     "url": {
@@ -362,7 +362,7 @@
                       "value": "application/json"
                     }
                   ],
-                  "body": "{\n  \"id\": \"amet voluptate ex\",\n  \"name\": \"dolore tempor\",\n  \"price\": 33488993.273412943,\n  \"currency\": \"aliqua\"\n}",
+                  "body": "{\n  \"id\": \"sint veniam\",\n  \"name\": \"cillum consectetur\",\n  \"price\": 61839089.43010238,\n  \"currency\": \"dolor\"\n}",
                   "cookie": [],
                   "_postman_previewlanguage": "json"
                 }
@@ -373,7 +373,7 @@
               }
             },
             {
-              "id": "81566041-0064-40f9-b409-eb4383f73df9",
+              "id": "b2d0978e-130b-4f32-a155-b8442ded2119",
               "name": "Get Pricing Plan",
               "request": {
                 "name": "Get Pricing Plan",
@@ -414,7 +414,7 @@
               },
               "response": [
                 {
-                  "id": "ff30a63d-2970-461d-a0ff-68b25f7aae7c",
+                  "id": "d4598e5b-04d5-4b8d-bd6c-4e91596ab9a4",
                   "name": "料金プラン詳細",
                   "originalRequest": {
                     "url": {
@@ -453,7 +453,7 @@
                       "value": "application/json"
                     }
                   ],
-                  "body": "{\n  \"id\": \"amet voluptate ex\",\n  \"name\": \"dolore tempor\",\n  \"price\": 33488993.273412943,\n  \"currency\": \"aliqua\"\n}",
+                  "body": "{\n  \"id\": \"sint veniam\",\n  \"name\": \"cillum consectetur\",\n  \"price\": 61839089.43010238,\n  \"currency\": \"dolor\"\n}",
                   "cookie": [],
                   "_postman_previewlanguage": "json"
                 }
