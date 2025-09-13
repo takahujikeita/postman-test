@@ -1,0 +1,472 @@
+{
+  "info": {
+    "name": "SaaSus API",
+    "description": "Combined SaaSus API Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.saasus.io",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "description": "SaaSus Auth API endpoints",
+      "item": [
+        {
+          "id": "ce7cd61c-3360-4deb-8eac-f94ebc19abd7",
+          "name": "Get User Info",
+          "request": {
+            "name": "Get User Info",
+            "description": {
+              "content": "ユーザー情報を取得",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "auth",
+                "userinfo"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "token",
+                  "value": "<string>",
+                  "description": "(Required) 認証トークン"
+                }
+              ],
+              "variable": [],
+              "raw": "{{baseUrl}}/v1/auth/userinfo"
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "aeffcf68-2970-4187-a415-601835b9cb26",
+              "name": "ユーザー情報",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "userinfo"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"culpa ex\",\n  \"email\": \"in dolor dolore in laborum\",\n  \"name\": \"dolore reprehenderit\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b6d43ea1-9208-44e7-a5fe-0dda852e7fd0",
+          "name": "Validate Token",
+          "request": {
+            "name": "Validate Token",
+            "description": {
+              "content": "トークンの有効性を検証",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "auth",
+                "validate"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [],
+              "raw": "{{baseUrl}}/v1/auth/validate"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "5adcdea6-6ec8-45e0-ad34-95c6ab32974c",
+              "name": "検証結果",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "validate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"token\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"valid\": false,\n  \"expires_at\": \"amet est ex cillum\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pricing",
+      "description": "SaaSus Pricing API endpoints",
+      "item": [
+        {
+          "id": "79d41de9-fb80-42f0-9111-7f21755ce9d2",
+          "name": "plans",
+          "item": [
+            {
+              "id": "37e8ef28-87ac-46a5-bfeb-deb06383e915",
+              "name": "Get Pricing Plans",
+              "request": {
+                "name": "Get Pricing Plans",
+                "description": {
+                  "content": "料金プランの一覧を取得",
+                  "type": "text/plain"
+                },
+                "url": {
+                  "path": [
+                    "v1",
+                    "pricing",
+                    "plans"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [],
+                  "raw": "{{baseUrl}}/v1/pricing/plans"
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "auth": null
+              },
+              "response": [
+                {
+                  "id": "140b5ddd-38c8-4145-aba1-9cfe97025605",
+                  "name": "料金プラン一覧",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "plans"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "method": "GET",
+                    "body": {}
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "body": "[\n  {\n    \"id\": \"nostrud\",\n    \"name\": \"consectetur ipsum ut\",\n    \"price\": -90064870.83311692,\n    \"currency\": \"velit in nostrud magna\"\n  },\n  {\n    \"id\": \"nulla\",\n    \"name\": \"consectetur tempor dolor\",\n    \"price\": -78546726.73326242,\n    \"currency\": \"culpa aute\"\n  }\n]",
+                  "cookie": [],
+                  "_postman_previewlanguage": "json"
+                }
+              ],
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
+            },
+            {
+              "id": "2d237317-ee76-4776-8c2c-1b96c6170137",
+              "name": "Create Pricing Plan",
+              "request": {
+                "name": "Create Pricing Plan",
+                "description": {
+                  "content": "新しい料金プランを作成",
+                  "type": "text/plain"
+                },
+                "url": {
+                  "path": [
+                    "v1",
+                    "pricing",
+                    "plans"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [],
+                  "raw": "{{baseUrl}}/v1/pricing/plans"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"price\": \"<number>\",\n  \"currency\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [
+                {
+                  "id": "41212db5-3044-418a-bf58-6ec07c18b62d",
+                  "name": "作成された料金プラン",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "plans"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "method": "POST",
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"name\": \"<string>\",\n  \"price\": \"<number>\",\n  \"currency\": \"<string>\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    }
+                  },
+                  "status": "Created",
+                  "code": 201,
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "body": "{\n  \"id\": \"amet voluptate ex\",\n  \"name\": \"dolore tempor\",\n  \"price\": 33488993.273412943,\n  \"currency\": \"aliqua\"\n}",
+                  "cookie": [],
+                  "_postman_previewlanguage": "json"
+                }
+              ],
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
+            },
+            {
+              "id": "81566041-0064-40f9-b409-eb4383f73df9",
+              "name": "Get Pricing Plan",
+              "request": {
+                "name": "Get Pricing Plan",
+                "description": {
+                  "content": "特定の料金プランを取得",
+                  "type": "text/plain"
+                },
+                "url": {
+                  "path": [
+                    "v1",
+                    "pricing",
+                    "plans",
+                    ":planId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "planId",
+                      "description": "(Required) プランID"
+                    }
+                  ],
+                  "raw": "{{baseUrl}}/v1/pricing/plans/:planId"
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "auth": null
+              },
+              "response": [
+                {
+                  "id": "ff30a63d-2970-461d-a0ff-68b25f7aae7c",
+                  "name": "料金プラン詳細",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "plans",
+                        ":planId"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": [
+                        {
+                          "disabled": false,
+                          "type": "any",
+                          "value": "<string>",
+                          "key": "planId",
+                          "description": "(Required) プランID"
+                        }
+                      ]
+                    },
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "method": "GET",
+                    "body": {}
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "body": "{\n  \"id\": \"amet voluptate ex\",\n  \"name\": \"dolore tempor\",\n  \"price\": 33488993.273412943,\n  \"currency\": \"aliqua\"\n}",
+                  "cookie": [],
+                  "_postman_previewlanguage": "json"
+                }
+              ],
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
+            }
+          ],
+          "event": []
+        }
+      ]
+    }
+  ]
+}

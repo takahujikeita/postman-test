@@ -1,0 +1,63 @@
+openapi: 3.0.0
+info:
+  title: SaaSus Auth API
+  version: 1.0.0
+  description: SaaSus認証APIのサンプル
+servers:
+  - url: https://api.saasus.io/v1/auth
+    description: SaaSus Auth API Server
+paths:
+  /userinfo:
+    get:
+      summary: Get User Info
+      description: ユーザー情報を取得
+      operationId: getUserInfo
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 認証トークン
+      responses:
+        '200':
+          description: ユーザー情報
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  email:
+                    type: string
+                  name:
+                    type: string
+  /validate:
+    post:
+      summary: Validate Token
+      description: トークンの有効性を検証
+      operationId: validateToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+              required:
+                - token
+      responses:
+        '200':
+          description: 検証結果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  valid:
+                    type: boolean
+                  expires_at:
+                    type: string

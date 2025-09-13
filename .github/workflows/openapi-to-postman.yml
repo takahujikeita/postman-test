@@ -1,0 +1,209 @@
+name: OpenAPI to Postman Converter
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'input/**/*.yml'
+      - 'input/**/*.yaml'
+      - 'input/**/*.json'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'input/**/*.yml'
+      - 'input/**/*.yaml'
+      - 'input/**/*.json'
+  workflow_dispatch:
+    inputs:
+      force_build:
+        description: 'Force rebuild all collections'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  convert-openapi-to-postman:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x]
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Create output directory
+      run: mkdir -p output
+      
+    - name: Convert OpenAPI to Postman collections
+      run: npm run convert
+      
+    - name: Validate generated collections
+      run: npm run validate
+      
+    - name: Check for changes in generated files
+      id: verify-changed-files
+      run: |
+        if git diff --quiet output/; then
+          echo "changed=false" >> $GITHUB_OUTPUT
+        else
+          echo "changed=true" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Show generated files
+      run: |
+        echo "Generated Postman collections:"
+        ls -la output/
+        echo ""
+        echo "Combined collection summary:"
+        head -30 output/combined-collection.json
+        
+    - name: Commit and push generated collections
+      if: steps.verify-changed-files.outputs.changed == 'true' || github.event.inputs.force_build == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add output/
+        git commit -m "Auto-generate Postman collections from OpenAPI specs
+        
+        Generated files:
+        - output/auth.json
+        - output/pricing.json  
+        - output/combined-collection.json
+        
+        Triggered by: ${{ github.event_name }}
+        Commit: ${{ github.sha }}"
+        git push
+        
+    - name: Upload Postman collections as artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: postman-collections
+        path: output/
+        retention-days: 30
+        
+    - name: Create release on tag
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref_name }}
+        release_name: Release ${{ github.ref_name }}
+        body: |
+          ## Generated Postman Collections
+          
+          This release contains automatically generated Postman collections from OpenAPI specifications.
+          
+          ### Files included:
+          - `combined-collection.json` - Complete SaaSus API collection with all services
+          - `auth.json` - Auth API specific collection  
+          - `pricing.json` - Pricing API specific collection
+          
+          ### How to use:
+          1. Download the `combined-collection.json`
+          2. Import it into Postman
+          3. Set the `baseUrl` variable to `https://api.saasus.io`
+          4. Test API endpoints organized by service folders
+          
+        draft: false
+        prerelease: false
+        
+    - name: Upload release assets
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: output/combined-collection.json
+        asset_name: saasus-api-postman-collection.json
+        asset_content_type: application/json
+
+  validate-postman-collections:
+    runs-on: ubuntu-latest
+    needs: convert-openapi-to-postman
+    if: always()
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Download generated collections
+      uses: actions/download-artifact@v4
+      with:
+        name: postman-collections
+        path: output/
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        
+    - name: Install Newman (Postman CLI)
+      run: npm install -g newman
+      
+    - name: Validate collection structure
+      run: |
+        echo "Validating Postman collection structure..."
+        newman run output/combined-collection.json --reporters cli --dry-run
+        
+    - name: Run collection health check
+      run: |
+        echo "Running health check on generated collections..."
+        node -e "
+        const fs = require('fs');
+        const collection = JSON.parse(fs.readFileSync('output/combined-collection.json', 'utf8'));
+        
+        console.log('Collection validation:');
+        console.log('- Name:', collection.info.name);
+        console.log('- Schema:', collection.info.schema);
+        console.log('- Variables:', collection.variable?.length || 0);
+        console.log('- Folders:', collection.item?.length || 0);
+        
+        let totalEndpoints = 0;
+        collection.item?.forEach(folder => {
+          const count = folder.item?.length || 0;
+          totalEndpoints += count;
+          console.log('  -', folder.name + ':', count, 'endpoints');
+        });
+        console.log('- Total endpoints:', totalEndpoints);
+        
+        if (totalEndpoints === 0) {
+          console.error('❌ No endpoints found in collection!');
+          process.exit(1);
+        }
+        console.log('✅ Collection validation passed');
+        "
+        
+    - name: Create validation report
+      run: |
+        echo "# Postman Collection Validation Report" > validation-report.md
+        echo "" >> validation-report.md
+        echo "**Generated on:** $(date)" >> validation-report.md
+        echo "**Workflow:** ${{ github.workflow }}" >> validation-report.md
+        echo "**Run ID:** ${{ github.run_id }}" >> validation-report.md
+        echo "" >> validation-report.md
+        
+        echo "## Files Generated" >> validation-report.md
+        ls -la output/ >> validation-report.md
+        echo "" >> validation-report.md
+        
+        echo "## Collection Summary" >> validation-report.md
+        node validate.js 2>&1 | tail -20 >> validation-report.md
+        
+    - name: Upload validation report
+      uses: actions/upload-artifact@v4
+      with:
+        name: validation-report
+        path: validation-report.md

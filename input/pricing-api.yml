@@ -1,0 +1,97 @@
+openapi: 3.0.0
+info:
+  title: SaaSus Pricing API
+  version: 1.0.0
+  description: SaaSus価格設定APIのサンプル
+servers:
+  - url: https://api.saasus.io/v1/pricing
+    description: SaaSus Pricing API Server
+paths:
+  /plans:
+    get:
+      summary: Get Pricing Plans
+      description: 料金プランの一覧を取得
+      operationId: getPricingPlans
+      responses:
+        '200':
+          description: 料金プラン一覧
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    price:
+                      type: number
+                    currency:
+                      type: string
+    post:
+      summary: Create Pricing Plan
+      description: 新しい料金プランを作成
+      operationId: createPricingPlan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                price:
+                  type: number
+                currency:
+                  type: string
+              required:
+                - name
+                - price
+                - currency
+      responses:
+        '201':
+          description: 作成された料金プラン
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  price:
+                    type: number
+                  currency:
+                    type: string
+  /plans/{planId}:
+    get:
+      summary: Get Pricing Plan
+      description: 特定の料金プランを取得
+      operationId: getPricingPlan
+      parameters:
+        - name: planId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: プランID
+      responses:
+        '200':
+          description: 料金プラン詳細
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  price:
+                    type: number
+                  currency:
+                    type: string

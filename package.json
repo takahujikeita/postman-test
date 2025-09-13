@@ -1,0 +1,25 @@
+{
+  "name": "postman-test",
+  "version": "1.0.0",
+  "description": "OpenAPI to Postman conversion test",
+  "main": "convert.js",
+  "scripts": {
+    "convert": "node convert.js",
+    "validate": "node validate.js",
+    "build": "npm run convert && npm run validate",
+    "ci": "npm ci && npm run build",
+    "precommit": "npm run build",
+    "test": "npm run validate"
+  },
+  "keywords": [
+    "postman",
+    "openapi",
+    "api",
+    "saasus"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "openapi-to-postmanv2": "^4.19.0"
+  }
+}
