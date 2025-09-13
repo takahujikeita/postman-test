@@ -177,16 +177,22 @@ async function syncToPostman() {
         
         // 成功時の情報出力
         if (result.statusCode === 200 || result.statusCode === 201) {
-            const collection = result.data.collection;
+            const collection = result.data?.collection;
             console.log('\n🎉 Synchronization completed successfully!');
-            console.log(`📋 Collection Name: ${collection.info.name}`);
-            console.log(`🆔 Collection UID: ${collection.info._postman_id}`);
-            console.log(`🔗 View in Postman: https://app.postman.com/`);
             
-            // 次回のために環境変数の設定をログ出力
-            if (!collectionUid) {
-                console.log('\n💡 For future automated updates, set this environment variable:');
-                console.log(`POSTMAN_COLLECTION_UID=${collection.info._postman_id}`);
+            if (collection && collection.info) {
+                console.log(`📋 Collection Name: ${collection.info.name}`);
+                console.log(`🆔 Collection UID: ${collection.info._postman_id}`);
+                console.log(`🔗 View in Postman: https://app.postman.com/`);
+                
+                // 次回のために環境変数の設定をログ出力
+                if (!collectionUid) {
+                    console.log('\n💡 For future automated updates, set this environment variable:');
+                    console.log(`POSTMAN_COLLECTION_UID=${collection.info._postman_id}`);
+                }
+            } else {
+                console.log('✅ Collection operation completed');
+                console.log('📊 Response:', JSON.stringify(result.data, null, 2));
             }
         }
         
