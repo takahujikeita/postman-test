@@ -5,11 +5,15 @@
   "main": "convert.js",
   "scripts": {
     "convert": "node convert.js",
-    "validate": "node validate.js",
+    "validate": "node validate.js", 
     "build": "npm run convert && npm run validate",
     "ci": "npm ci && npm run build",
     "precommit": "npm run build",
-    "test": "npm run validate"
+    "test": "npm run validate",
+    "postman:sync": "node postman-sync.js sync",
+    "postman:info": "node postman-sync.js info",
+    "postman:setup": "echo 'Set environment variables: POSTMAN_API_KEY, POSTMAN_WORKSPACE_ID, POSTMAN_COLLECTION_UID'",
+    "sync": "npm run build && npm run postman:sync"
   },
   "keywords": [
     "postman",

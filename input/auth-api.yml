@@ -61,3 +61,24 @@ paths:
                     type: boolean
                   expires_at:
                     type: string
+  /health:
+    get:
+      summary: Health Check
+      description: APIの状態を確認
+      operationId: healthCheck
+      responses:
+        '200':
+          description: API状態
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy, unhealthy]
+                  timestamp:
+                    type: string
+                    format: date-time
+                  version:
+                    type: string

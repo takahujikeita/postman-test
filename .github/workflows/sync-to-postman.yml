@@ -1,0 +1,226 @@
+name: Sync OpenAPI to Postman
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'input/**/*.yml'
+      - 'input/**/*.yaml'
+      - 'input/**/*.json'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'input/**/*.yml'
+      - 'input/**/*.yaml' 
+      - 'input/**/*.json'
+  workflow_dispatch:
+    inputs:
+      sync_all:
+        description: 'Force sync all collections to Postman'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  sync-to-postman:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+      pull-requests: write
+      
+    outputs:
+      collections-updated: ${{ steps.postman-sync.outputs.updated }}
+      
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Create output directory
+      run: mkdir -p output
+      
+    - name: Generate Postman collections from OpenAPI
+      run: npm run convert
+      
+    - name: Validate generated collections
+      run: npm run validate
+      
+    - name: Check for OpenAPI changes
+      id: check-changes
+      run: |
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ "${{ github.event.inputs.sync_all }}" == "true" ]; then
+          echo "changed=true" >> $GITHUB_OUTPUT
+          echo "reason=forced_sync" >> $GITHUB_OUTPUT
+        elif git diff --quiet HEAD~1 -- input/; then
+          echo "changed=false" >> $GITHUB_OUTPUT
+          echo "reason=no_changes" >> $GITHUB_OUTPUT
+        else
+          echo "changed=true" >> $GITHUB_OUTPUT  
+          echo "reason=openapi_modified" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Sync collections to Postman via API
+      id: postman-sync
+      if: steps.check-changes.outputs.changed == 'true'
+      env:
+        POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
+        POSTMAN_COLLECTION_UID: ${{ secrets.POSTMAN_COLLECTION_UID }}
+        POSTMAN_WORKSPACE_ID: ${{ secrets.POSTMAN_WORKSPACE_ID }}
+      run: |
+        echo "🔄 Syncing to Postman..."
+        
+        # Postman APIキーの確認
+        if [ -z "$POSTMAN_API_KEY" ]; then
+          echo "❌ POSTMAN_API_KEY is not set"
+          exit 1
+        fi
+        
+        # Combined collectionをPostmanに送信
+        COLLECTION_FILE="output/combined-collection.json"
+        
+        if [ -f "$COLLECTION_FILE" ]; then
+          echo "📤 Uploading collection to Postman..."
+          
+          # Postman APIを使ってコレクションを更新
+          RESPONSE=$(curl -s -w "%{http_code}" -X PUT \
+            "https://api.getpostman.com/collections/$POSTMAN_COLLECTION_UID" \
+            -H "X-API-Key: $POSTMAN_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d @"$COLLECTION_FILE")
+          
+          HTTP_CODE=$(echo "$RESPONSE" | tail -c 4)
+          RESPONSE_BODY=$(echo "$RESPONSE" | head -c -4)
+          
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✅ Collection updated successfully in Postman"
+            echo "updated=true" >> $GITHUB_OUTPUT
+            
+            # レスポンスから更新情報を抽出
+            COLLECTION_NAME=$(echo "$RESPONSE_BODY" | jq -r '.collection.info.name // "Unknown"')
+            echo "Collection Name: $COLLECTION_NAME"
+            
+          else
+            echo "❌ Failed to update collection. HTTP Code: $HTTP_CODE"
+            echo "Response: $RESPONSE_BODY"
+            echo "updated=false" >> $GITHUB_OUTPUT
+            
+            # エラーでも続行（ローカルファイルは生成済み）
+            # exit 1
+          fi
+        else
+          echo "❌ Collection file not found: $COLLECTION_FILE"
+          echo "updated=false" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Create/Update postman directory for GitHub sync
+      if: steps.check-changes.outputs.changed == 'true'
+      run: |
+        echo "📁 Creating postman directory structure..."
+        
+        # postman/collections ディレクトリを作成
+        mkdir -p postman/collections
+        
+        # Collection UIDがある場合、そのファイル名でコピー
+        if [ -n "${{ secrets.POSTMAN_COLLECTION_UID }}" ]; then
+          cp output/combined-collection.json "postman/collections/${{ secrets.POSTMAN_COLLECTION_UID }}.json"
+          echo "✅ Created: postman/collections/${{ secrets.POSTMAN_COLLECTION_UID }}.json"
+        else
+          cp output/combined-collection.json "postman/collections/saasus-api-collection.json"
+          echo "✅ Created: postman/collections/saasus-api-collection.json"
+        fi
+        
+    - name: Commit and push postman directory
+      if: steps.check-changes.outputs.changed == 'true'
+      run: |
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        
+        git add postman/
+        
+        if git diff --staged --quiet; then
+          echo "No changes to commit in postman directory"
+        else
+          git commit -m "🤖 Auto-sync: Update Postman collection from OpenAPI specs
+
+📁 Updated files:
+- postman/collections/ (GitHub-Postman sync format)
+
+🔄 Sync status: ${{ steps.postman-sync.outputs.updated == 'true' && 'SUCCESS' || 'LOCAL_ONLY' }}
+📝 Trigger: ${{ steps.check-changes.outputs.reason }}
+⏰ Generated at: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+          
+          git push || echo "Failed to push, but continuing..."
+        fi
+        
+    - name: Upload collections as artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: postman-collections-${{ github.run_number }}
+        path: |
+          output/
+          postman/
+        retention-days: 30
+        
+    - name: Comment on PR with sync status
+      if: github.event_name == 'pull_request' && steps.check-changes.outputs.changed == 'true'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const syncSuccess = '${{ steps.postman-sync.outputs.updated }}' === 'true';
+          const reason = '${{ steps.check-changes.outputs.reason }}';
+          
+          const body = `## 🤖 Postman Collection Auto-Sync
+          
+          **Status:** ${syncSuccess ? '✅ SUCCESS' : '⚠️ LOCAL ONLY'}
+          **Trigger:** ${reason}
+          **Workflow:** [${context.runNumber}](${context.payload.repository.html_url}/actions/runs/${context.runId})
+          
+          ### 📊 Results
+          - **Generated Collections:** ✅ Local files created
+          - **Postman API Sync:** ${syncSuccess ? '✅ Updated successfully' : '❌ Failed or skipped'}
+          - **GitHub Sync Format:** ✅ Created postman/collections/
+          
+          ### 📁 Files Updated
+          - \`output/combined-collection.json\` - Complete API collection
+          - \`output/auth.json\` - Auth API endpoints  
+          - \`output/pricing.json\` - Pricing API endpoints
+          - \`postman/collections/\` - GitHub-Postman sync format
+          
+          ${syncSuccess ? 
+            '✨ Your Postman workspace has been updated with the latest API changes!' :
+            '⚠️ Postman API sync failed, but local collections were generated successfully. Check the workflow logs for details.'
+          }`;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: body
+          });
+
+  notify-completion:
+    runs-on: ubuntu-latest
+    needs: sync-to-postman
+    if: always() && needs.sync-to-postman.outputs.collections-updated == 'true'
+    
+    steps:
+    - name: Send completion notification
+      run: |
+        echo "🎉 Postman synchronization completed!"
+        echo "Collections have been updated in:"
+        echo "  - Local repository (output/ directory)"
+        echo "  - GitHub sync format (postman/collections/)"
+        echo "  - Postman workspace (via API)"
+        echo ""
+        echo "🔗 View in Postman: https://app.postman.com/"

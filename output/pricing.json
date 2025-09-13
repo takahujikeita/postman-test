@@ -1,11 +1,11 @@
 {
   "item": [
     {
-      "id": "5aae2a1c-1ea5-4dae-b7bc-e2628011bd89",
+      "id": "c1e6d29b-7e37-4ffd-b8bb-067158d5c191",
       "name": "plans",
       "item": [
         {
-          "id": "5f8d62b6-788c-4a3b-9a75-37a0749d8ce2",
+          "id": "8ad0f2c0-248f-423a-857c-d5c89ada44a3",
           "name": "Get Pricing Plans",
           "request": {
             "name": "Get Pricing Plans",
@@ -37,7 +37,7 @@
           },
           "response": [
             {
-              "id": "2a5ef83e-ab1d-4265-9f9b-4699ccc99111",
+              "id": "2ec1a435-461b-4471-9bc1-0ad1bef97c4c",
               "name": "料金プラン一覧",
               "originalRequest": {
                 "url": {
@@ -67,7 +67,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "[\n  {\n    \"id\": \"laboris et incididunt velit aliquip\",\n    \"name\": \"Lorem\",\n    \"price\": -29007160.091728628,\n    \"currency\": \"occaecat laborum id\"\n  },\n  {\n    \"id\": \"deserunt\",\n    \"name\": \"magna do\",\n    \"price\": 5998803.941961974,\n    \"currency\": \"amet magna qui\"\n  }\n]",
+              "body": "[\n  {\n    \"id\": \"consequ\",\n    \"name\": \"ad aute anim sint\",\n    \"price\": 11143944.403696477,\n    \"currency\": \"sit est\"\n  },\n  {\n    \"id\": \"et mollit\",\n    \"name\": \"sit Excepteu\",\n    \"price\": -96918410.8097481,\n    \"currency\": \"aute voluptate\"\n  }\n]",
               "cookie": [],
               "_postman_previewlanguage": "json"
             }
@@ -78,7 +78,7 @@
           }
         },
         {
-          "id": "9ae49947-96fc-4fcc-b2ae-b6c4f3af2f30",
+          "id": "e6e335dd-ecef-45e5-9ff8-b760269cf62d",
           "name": "Create Pricing Plan",
           "request": {
             "name": "Create Pricing Plan",
@@ -123,7 +123,7 @@
           },
           "response": [
             {
-              "id": "5331ab19-0839-4482-bbfe-d42267e2e7b9",
+              "id": "083a4d2f-54e1-49bc-8a48-8a76d1a70778",
               "name": "作成された料金プラン",
               "originalRequest": {
                 "url": {
@@ -161,7 +161,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"id\": \"sint veniam\",\n  \"name\": \"cillum consectetur\",\n  \"price\": 61839089.43010238,\n  \"currency\": \"dolor\"\n}",
+              "body": "{\n  \"id\": \"sunt ut\",\n  \"name\": \"consequat nostrud in eiusmod\",\n  \"price\": -74668946.12792099,\n  \"currency\": \"deserunt ut incididunt do aliqua\"\n}",
               "cookie": [],
               "_postman_previewlanguage": "json"
             }
@@ -172,7 +172,7 @@
           }
         },
         {
-          "id": "b2d0978e-130b-4f32-a155-b8442ded2119",
+          "id": "11c8deab-22f9-448c-b63e-9f35d69e857a",
           "name": "Get Pricing Plan",
           "request": {
             "name": "Get Pricing Plan",
@@ -213,7 +213,7 @@
           },
           "response": [
             {
-              "id": "d4598e5b-04d5-4b8d-bd6c-4e91596ab9a4",
+              "id": "a1c9559d-e237-470d-a15c-8b336b589e71",
               "name": "料金プラン詳細",
               "originalRequest": {
                 "url": {
@@ -252,7 +252,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"id\": \"sint veniam\",\n  \"name\": \"cillum consectetur\",\n  \"price\": 61839089.43010238,\n  \"currency\": \"dolor\"\n}",
+              "body": "{\n  \"id\": \"sunt ut\",\n  \"name\": \"consequat nostrud in eiusmod\",\n  \"price\": -74668946.12792099,\n  \"currency\": \"deserunt ut incididunt do aliqua\"\n}",
               "cookie": [],
               "_postman_previewlanguage": "json"
             }
@@ -275,7 +275,7 @@
     }
   ],
   "info": {
-    "_postman_id": "af35b1bf-64e3-4f34-a35d-02fd727aa371",
+    "_postman_id": "954ba8c7-026a-458b-999a-11abae948b78",
     "name": "Pricing",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "description": {

@@ -2,18 +2,25 @@
 
 ## 必要な環境設定
 
-### 1. Repository Secrets (必要に応じて)
-もし将来的にPostman APIとの連携や外部サービスへのデプロイが必要な場合:
+### 1. Repository Secrets (Postman API連携用)
+
+PostmanのAPIと連携してコレクションを自動更新するために以下のシークレットを設定:
 
 ```
 POSTMAN_API_KEY=your_postman_api_key_here
-SLACK_WEBHOOK_URL=your_slack_webhook_for_notifications
+POSTMAN_COLLECTION_UID=your_collection_uid_here
+POSTMAN_WORKSPACE_ID=your_workspace_id_here
 ```
 
-### 2. Repository Variables
+**設定手順:**
+1. Postmanで[API Key](https://web.postman.co/settings/me/api-keys)を生成
+2. GitHubリポジトリの Settings → Secrets and variables → Actions
+3. "New repository secret" で上記3つを追加
+
+### 2. Repository Variables (オプション)
 ```
-POSTMAN_WORKSPACE_ID=your_postman_workspace_id
 DEFAULT_BASE_URL=https://api.saasus.io
+COLLECTION_NAME=SaaSus API Collection
 ```
 
 ## ワークフロートリガー

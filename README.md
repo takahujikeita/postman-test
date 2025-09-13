@@ -21,6 +21,36 @@ OpenAPI仕様からPostmanコレクションを生成する自動化パイプラ
 3. **"Run workflow"** をクリック
 4. オプション: **"Force rebuild all collections"** で強制再生成
 
+### 🤖 Postman API連携 (NEW!)
+
+**自動化レベル**: API仕様変更 → Postmanコレクション自動更新
+
+#### セットアップ手順
+```bash
+# セットアップガイドを実行
+./scripts/setup-postman.sh
+```
+
+#### 必要なシークレット
+- `POSTMAN_API_KEY`: PostmanのAPI Key
+- `POSTMAN_WORKSPACE_ID`: 対象ワークスペースのID  
+- `POSTMAN_COLLECTION_UID`: 更新対象コレクションのID (オプション)
+
+#### 動作フロー
+1. **OpenAPI変更検出**: input/ディレクトリの変更を監視
+2. **コレクション生成**: 最新のPostmanコレクションを生成
+3. **Postman同期**: Postman APIを使って自動更新
+4. **GitHub同期**: postman/collections/ディレクトリにも保存
+
+#### ローカルテスト
+```bash
+# Postman APIとの接続確認
+npm run postman:info
+
+# 完全同期 (変換 + Postman更新)
+npm run sync
+```
+
 ### 出力
 - **Artifacts**: 生成されたPostmanコレクション（30日間保持）
 - **Auto-commit**: 変更があれば自動でoutput/ファイルをコミット
@@ -121,29 +151,50 @@ head -20 output/combined-collection.json
 - [ ] **URL構造**: `/v1/auth/userinfo`, `/v1/pricing/plans` のように正しいパスになっている
 - [ ] **API移動テスト**: APIをフォルダー間でコピーしても正常に動作する
 
-### 🔧 トラブルシューティング
+#### 🔧 トラブルシューティング
 
-**変換が失敗する場合:**
+#### GitHub Actions が失敗する場合
+
+**1. 基本チェック**
 ```bash
-# Node.jsとnpmのバージョン確認
-node --version
-npm --version
+# ローカル環境での事前チェック
+./scripts/troubleshoot.sh
 
-# パッケージの再インストール
-rm -rf node_modules package-lock.json
-npm install
+# 依存関係の再インストール
+npm ci
+npm run build
 ```
 
-**出力ファイルが生成されない場合:**
-```bash
-# 権限確認
-ls -la output/
+**2. よくあるエラーと対処法**
 
-# ディレクトリの再作成
-rm -rf output
-mkdir output
+| エラー | 原因 | 対処法 |
+|--------|------|--------|
+| `exit code 128` | Git認証エラー | ワークフローの権限設定を確認 |
+| `Artifact not found` | 前のジョブが失敗 | 最初のジョブのログを確認 |
+| `npm ci failed` | package-lock.jsonの問題 | ローカルで`npm install`後コミット |
+| `Collection validation failed` | OpenAPI仕様エラー | `input/`ディレクトリのファイルを確認 |
+
+**3. 手動実行での確認**
+- GitHub Actions タブから手動実行
+- "Force rebuild all collections" オプションを有効化
+- ログでエラー詳細を確認
+
+**4. ローカルでのデバッグ**
+```bash
+# 変換テスト
+npm run convert
+
+# 検証テスト  
+npm run validate
+
+# 統合テスト
+npm run build
 ```
 
-## 開発メモ
+## 📊 プロジェクト統計
 
-このローカルテスト環境は、GitHub Actions化前の検証用です。テストが成功したら、同じロジックをGitHub Actionsワークフローに組み込みます。
+- **変換対象**: OpenAPI 3.0仕様ファイル
+- **出力形式**: Postman Collection v2.1
+- **サポートサービス**: Auth, Pricing
+- **自動化レベル**: 完全自動化（CI/CD）
+- **品質保証**: Newman + カスタム検証
